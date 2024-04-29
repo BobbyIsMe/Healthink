@@ -21,7 +21,7 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE User(
+      CREATE TABLE Meal(
         id INTEGER PRIMARY KEY,
         date VARCHAR(12) NOT NULL,
         foodName VARCHAR(40) NOT NULL,
@@ -80,7 +80,7 @@ class DatabaseHelper {
 //_${DateFormat("MMddyy").format(time)}
   Future<void> addMP(String date, MealPlanner mp) async {
     final db = await DatabaseHelper.instance.database;
-    await db.insert("User", mp.toJson(date),
+    await db.insert("Meal", mp.toJson(date),
         conflictAlgorithm: ConflictAlgorithm.replace);
     await insertIncomplete(db, date, mp, '+');
   }
@@ -119,7 +119,7 @@ class DatabaseHelper {
   Future<void> completeMP(int id, String date, int done) async {
     final db = await DatabaseHelper.instance.database;
     await db.rawUpdate('''
-      UPDATE User
+      UPDATE Meal
       SET done = $done
       WHERE id= ?
       ''', [id]);
@@ -134,10 +134,10 @@ class DatabaseHelper {
 
   Future<void> deleteMP(String date, MealPlanner mp) async {
     final db = await DatabaseHelper.instance.database;
-    db.delete("User", where: "id = ?", whereArgs: [mp.id]);
+    db.delete("Meal", where: "id = ?", whereArgs: [mp.id]);
 
     List<Map<String, dynamic>> userMP =
-        await db.rawQuery("SELECT COUNT(*) FROM User WHERE date='$date';");
+        await db.rawQuery("SELECT COUNT(*) FROM Meal WHERE date='$date';");
 
     if (userMP[0]['COUNT(*)'] == 0) {
       await db.delete(
@@ -190,7 +190,7 @@ class DatabaseHelper {
     final db = await DatabaseHelper.instance.database;
 
     List<Map<String, dynamic>> maps =
-        await db.rawQuery('SELECT * FROM User WHERE date=?', [date]);
+        await db.rawQuery('SELECT * FROM Meal WHERE date=?', [date]);
 
     if (maps.isEmpty) {
       return [];
