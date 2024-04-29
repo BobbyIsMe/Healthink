@@ -39,15 +39,7 @@ class DatabaseHelper {
       CREATE TABLE Progress(
         date VARCHAR(12) PRIMARY KEY,
         complete INTEGER NOT NULL,
-        incomplete INTEGER NOT NULL,
-        calories REAL NOT NULL,
-        protein REAL NOT NULL,
-        carbs REAL NOT NULL,
-        fats REAL NOT NULL,
-        iron REAL NOT NULL,
-        zinc REAL NOT NULL,
-        b12 REAL NOT NULL,
-        price REAL NOT NULL
+        incomplete INTEGER NOT NULL
       );
       ''');
     await db.execute('''
@@ -175,14 +167,6 @@ class DatabaseHelper {
           'date': date,
           'complete': 0,
           'incomplete': 1,
-          'calories': mp.calories,
-          'protein': mp.protein,
-          'carbs': mp.carbs,
-          'fats': mp.fats,
-          'iron': mp.iron,
-          'zinc': mp.zinc,
-          'b12': mp.b12,
-          'price': mp.price,
         },
         conflictAlgorithm: ConflictAlgorithm.ignore);
 
@@ -197,15 +181,7 @@ class DatabaseHelper {
       String symbol, MealPlanner mp) async {
     await db.rawUpdate('''
       UPDATE Progress
-      SET $done = $done $symbol 1,
-      calories = calories $symbol ${mp.calories},
-      protein = protein $symbol ${mp.protein},
-      carbs = carbs $symbol ${mp.carbs},
-      fats = fats $symbol ${mp.fats},
-      iron = iron $symbol ${mp.iron},
-      zinc = zinc $symbol ${mp.zinc},
-      b12 = b12 $symbol ${mp.b12},
-      price = price $symbol ${mp.price}
+      SET $done = $done $symbol 1
       WHERE date = ?
     ''', [date]);
   }
