@@ -505,8 +505,7 @@ class _UserMPState extends State<UserMP> {
             Column(
               children: List.generate(addons.length, (index) {
                 String ad = addons[index];
-                int promo =
-                    (mp.promos.isNotEmpty) ? int.parse(promos[index]) : 0;
+                int promo = int.parse(promos[index]);
                 int amount = int.parse(addonsValue.elementAt(index));
                 double price = 0;
                 if (promo >= 1) {

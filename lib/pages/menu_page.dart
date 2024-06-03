@@ -46,6 +46,7 @@ class MenuState extends State<Menu> {
       b12 = 0,
       calories = 0,
       price = 0;
+
   @override
   void initState() {
     addonsValue = {};
@@ -523,14 +524,25 @@ class MenuState extends State<Menu> {
                   showCloseIcon: true,
                   duration: const Duration(seconds: 2),
                 ));
-                Map<String, int> f = Map.of(addonsValue);
-                promosValue.forEach((key, value) {
-                  if (f[key] != null) {
-                    f[key] = value + 1;
+                Map<String, int> fr = Map.from(addonsValue);
+                fr.forEach((key, value) {
+                  if (!promosValue.containsKey(key)) promosValue[key] = 0;
+                });
+                var promosList = promosValue.entries.toList();
+                promosList.sort((a, b) => a.key.compareTo(b.key));
+                Map<String, int> pr = Map.fromEntries(promosList);
+                pr.forEach((key, value) {
+                  if (fr[key] != null) {
+                    fr[key] = value + 1;
                   } else {
-                    f[key] = 1;
+                    if (promosValue[key] != 0) {
+                      fr[key] = 1;
+                    }
                   }
                 });
+                var addonsList = fr.entries.toList();
+                addonsList.sort((a, b) => a.key.compareTo(b.key));
+                Map<String, int> f = Map.fromEntries(addonsList);
                 MealPlanner mP = MealPlanner(
                     foodName: foodName,
                     category: widget.category,
@@ -538,7 +550,7 @@ class MenuState extends State<Menu> {
                     amount: amount,
                     variant: variant,
                     addons: f.keys.join(','),
-                    promos: promosValue.values.join(','),
+                    promos: pr.values.join(','),
                     addonsValue: f.values.join(','),
                     done: 0,
                     calories: calories,
